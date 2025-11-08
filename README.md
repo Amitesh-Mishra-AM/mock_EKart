@@ -1,138 +1,150 @@
-# ✅ **README.md**
+# Mock E-Com Cart
 
-# Mock E-Com Cart (Full Stack Assignment)
+A full-stack shopping cart application built with React, Express, and MongoDB.
+Supports product listing, searching, filtering, cart management, quantity updates, and a mock checkout flow.
 
-This project is a small full-stack shopping cart application built for the Vibe Commerce recruitment assignment.
-It covers basic product listing, cart management, and a mock checkout flow.
-The stack uses **React**, **Node/Express**, and an in-memory cart (MongoDB can be added later).
 
-## **Features**
+## Features
 
-### **Frontend**
+### Frontend (React)
 
-* Product grid with 5–10 items
-* “Add to Cart” button
-* Cart view showing items, qty, and total
-* Remove item from cart
-* Simple checkout form (name + email)
-* Receipt shown after checkout
+* Product grid with images, name, and price
+* Add to Cart button
+* Cart view with quantity update (+/–)
+* Remove item
+* Total price calculation
+* Checkout modal (name + email)
+* Toast notifications
+* Search bar and price filter
 * Responsive layout
 
-### **Backend**
+### Backend (Node.js + Express + MongoDB)
 
-* `GET /api/products` – returns mock product list
-* `POST /api/cart` – add item to cart
-* `DELETE /api/cart/:id` – remove item
-* `GET /api/cart` – get cart + total
-* `POST /api/checkout` – returns a mock receipt
+* `/api/products`
+* `/api/cart` (add, update, remove, get)
+* `/api/checkout`
+* Product seeding
+* User-specific cart using email as identifier
 
-Backend uses a small in-memory cart class. No real payments.
 
-## **Project Structure**
-
-```
-/backend
-   server.js
-   products.js
-   cart.js
-   package.json
-
-/frontend
-   src/
-      App.js
-      api.js
-      components/
-         ProductList.js
-         Cart.js
-         Checkout.js
-   package.json
-
-README.md
-```
-
-# ✅ **How to Run Locally**
-
-## **1. Clone the repository**
+## Project Structure
 
 ```
-git clone <repo-url>
-cd mock-ecom
+backend/
+  src/
+    server.js
+    db.js
+    models/
+      Product.js
+      CartItem.js
+      User.js
+    routes/
+      products.js
+      cart.js
+      checkout.js
+  .env
+
+frontend/
+  src/
+    App.jsx
+    api.js
+    styles.css
+    components/
+      ProductCard.jsx
+      Cart.jsx
+      CheckoutModal.jsx
+      Header.jsx
+      PriceFilter.jsx
+  public/
+    img/
+      (local product images if any)
 ```
 
-## **2. Start the Backend**
+
+## Local Setup
+
+### Requirements
+
+* Node.js
+* MongoDB running locally (`mongod`)
+
+
+
+## Backend Setup
 
 ```
 cd backend
 npm install
-npm start
 ```
 
-Backend runs on:
+Create a `.env` file:
 
 ```
-http://localhost:5000
+PORT=5000
+MONGO_URI=mongodb://127.0.0.1:27017/vibe_cart
 ```
 
-## **3. Start the Frontend**
+Start the server:
 
 ```
-cd ../frontend
+npm run dev
+```
+
+Seed products:
+
+```
+GET http://localhost:5000/api/products/seed
+```
+
+---
+
+## Frontend Setup
+
+```
+cd frontend
 npm install
-npm start
+npm run dev
 ```
 
-Frontend runs on:
+Open the Vite URL shown in the terminal.
 
-```
-http://localhost:3000
-```
 
-Make sure both servers are running.
+## Usage
 
-# ✅ **How the App Works**
+1. Browse products
+2. Filter by search or price
+3. Add items to cart
+4. Update quantity or remove items
+5. Checkout with name and email
+6. Receipt is generated and cart is cleared
 
-1. The product grid loads from `/api/products`.
-2. Clicking **Add to Cart** sends a POST request to `/api/cart`.
-3. Cart automatically updates using `GET /api/cart`.
-4. Removing an item calls `DELETE /api/cart/:id`.
-5. On checkout, the frontend sends name, email, and cart items to `/api/checkout`.
-6. The backend returns a simple receipt object:
 
-   * customer name
-   * email
-   * items
-   * total
-   * timestamp
+## API Endpoints
 
-# ✅ **API Endpoints**
+### `GET /api/products`
 
-### **GET /api/products**
+List products with search and price filters.
 
-Returns product list.
+### `POST /api/cart`
 
-### **GET /api/cart**
+Add or update an item:
 
-Returns cart items + total.
-
-### **POST /api/cart**
-
-```
-{
-  "productId": "p2",
-  "qty": 1
-}
+```json
+{ "productId": "...", "qty": 2 }
 ```
 
-### **DELETE /api/cart/:id**
+### `GET /api/cart`
 
-Removes an item.
+Get cart for the current user (based on `x-user-email` header).
 
-### **POST /api/checkout**
+### `DELETE /api/cart/:productId`
 
-```
-{
-  "cartItems": [...],
-  "name": "test",
-  "email": "test@example.com"
-}
+Remove a cart item.
+
+### `POST /api/checkout`
+
+Generate receipt:
+
+```json
+{ "name": "Amitesh" }
 ```

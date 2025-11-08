@@ -1,24 +1,10 @@
-const API = "http://localhost:5000/api";
+import axios from "axios";
 
-export const getProducts = async () =>
-  (await fetch(`${API}/products`)).json();
+const api = axios.create({
+  baseURL: "http://localhost:5000",
+});
+export function setUserEmail(email) {
+  api.defaults.headers.common["x-user-email"] = email;
+}
 
-export const addToCart = async (productId, qty) =>
-  fetch(`${API}/cart`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ productId, qty })
-  });
-
-export const getCart = async () =>
-  (await fetch(`${API}/cart`)).json();
-
-export const removeItem = async (id) =>
-  fetch(`${API}/cart/${id}`, { method: "DELETE" });
-
-export const checkout = async (cartItems, name, email) =>
-  (await fetch(`${API}/checkout`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ cartItems, name, email })
-  })).json();
+export default api;
